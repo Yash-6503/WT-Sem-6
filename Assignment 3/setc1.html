@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Student Name Interaction</title>
+    </head>
+
+    <body>
+
+        <!-- Input for student name -->
+        <label for="studentName">Enter Student Name:</label>
+        <input type="text" id="studentName" onblur="changeStyle()" onmouseover="showImage()"
+            onmousedown="changeImageSize('small')" onmouseup="changeImageSize('normal')">
+
+        <!-- Image initially hidden -->
+        <img id="sampleImage" src="./logo.png" alt="Sample Image" style="display: none;">
+
+        <script>
+            function changeStyle() {
+                // Get the student name input value
+                var studentName = document.getElementById('studentName').value;
+
+                // Check if the student name is present
+                if (studentName.trim() !== '') {
+                    // Change font color and size
+                    document.getElementById('studentName').style.color = 'red';
+                    document.getElementById('studentName').style.fontSize = '18px';
+                } else {
+                    // Show the image if the student name is empty
+                    showImage();
+                }
+            }
+
+            function showImage() {
+                // Show the hidden image
+                document.getElementById('sampleImage').style.display = 'block';
+            }
+
+            function changeImageSize(size) {
+                // Change image size based on the parameter
+                var imageSize = (size === 'small') ? '100px' : '200px';
+                document.getElementById('sampleImage').style.width = imageSize;
+            }
+
+            // Additional event handler for onload
+            window.onload = function () {
+                alert('Page loaded successfully!');
+            };
+        </script>
+
+    </body>
+
+</html>

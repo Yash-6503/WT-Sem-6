@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Remove Div Section</title>
+        <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+    </head>
+
+    <body>
+        <h1>page content</h1>
+        <!-- Div section to be removed -->
+        <div id="removeMe">
+            <p>This is the content inside the div.</p>
+            <button onclick="removeDiv()">Remove Div</button>
+
+        </div>
+
+
+        <script>
+            function removeDiv() {
+                // Use jQuery to select and remove the div with id 'removeMe'
+                $('#removeMe').remove();
+
+            }
+
+        </script>
+
+    </body>
+
+</html>
