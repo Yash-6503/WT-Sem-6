@@ -1,0 +1,18 @@
+body
+{
+	background-color:#64846;
+}
+itemname
+{
+	color:red;
+	font-family:copperplate Gothic Light;
+	font-size:16pt;
+	font:bold;
+}
+itemprice,quantity
+{
+	color:yellow;
+	font-family:Arial;
+	font-size:12pt;
+	font:bold;
+}
