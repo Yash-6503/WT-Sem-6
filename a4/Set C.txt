@@ -1,0 +1,195 @@
+//Set C c1.html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Auto Suggest</title>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="script5.js"></script>
+</head>
+<body>
+<h2>Auto Suggest</h2>
+<input type="text" id="searchInput" placeholder="Type here...">
+<div id="suggestions"></div>
+</body>
+</html>
+
+
+//get_suggestions.php file
+<?php
+// Array of suggestions
+$suggestions = array(
+    "apple",
+    "banana",
+    "cherry",
+    "grape",
+    "lemon",
+    "orange",
+    "pear",
+    "strawberry",
+    "watermelon"
+);
+
+$userInput = $_POST['userInput'];
+$matches = array();
+
+foreach($suggestions as $suggestion) {
+    if(stripos($suggestion, $userInput) !== false) {
+        $matches[] = $suggestion;
+    }
+}
+
+if(count($matches) > 0) {
+    foreach($matches as $match) {
+        echo "<p>$match</p>";
+    }
+} else {
+    echo "<p>No suggestions found</p>";
+}
+?>
+
+
+//script5.js file
+$(document).ready(function(){
+    $("#searchInput").keyup(function(){
+        var userInput = $(this).val();
+        if(userInput !== ''){
+            $.ajax({
+                url: "get_suggestions.php",
+                type: "POST",
+                data: {userInput: userInput},
+                success: function(response){
+                    $("#suggestions").html(response);
+                },
+                error: function(xhr, status, error){
+                    console.error(xhr.responseText);
+                }
+            });
+        } else {
+            $("#suggestions").html("");
+        }
+    });
+});
+
+
+//Set C c2.html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Book Details</title>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="script6.js"></script>
+</head>
+<body>
+<h2>Book Details</h2>
+<select id="bookSelect">
+  <option value="">Select a book</option>
+  <!-- Options will be dynamically populated via AJAX -->
+</select>
+<div id="bookDetails"></div>
+</body>
+</html>
+
+
+//get_book_details.php file
+<?php
+$selectedBook = $_POST['selectedBook'];
+
+// Load the XML file
+$xml = simplexml_load_file("books.xml");
+
+// Find the book with the matching title
+$bookDetails = $xml->xpath("//book[title='" . $selectedBook . "']");
+
+if ($bookDetails) {
+    // Extract details of the first matching book
+    $book = $bookDetails[0];
+
+    echo "<h3>Book Details</h3>";
+    echo "<p>Title: " . $book->title . "</p>";
+    echo "<p>Author: " . $book->author . "</p>";
+    echo "<p>Year: " . $book->year . "</p>";
+    echo "<p>Price: $" . $book->price . "</p>";
+} else {
+    echo "Book details not found.";
+}
+?>
+
+
+//get_books.php file
+<?php
+$xml = simplexml_load_file("books.xml");
+echo $xml->asXML();
+?>
+
+//books.xml file
+<?xml version="1.0" encoding="UTF-8"?>
+<books>
+    <book>
+        <title>Harry Potter and the Deathely Hallows</title>
+        <author>J.K. Rowling</author>
+        <year>2000</year>
+        <price>20.00</price>
+    </book>
+    <book>
+        <title>The Great Gatsby</title>
+        <author>F. Scott Fitzgerald</author>
+        <year>1925</year>
+        <price>15.00</price>
+    </book>
+    <book>
+        <title>To Kill a Mockingbird</title>
+        <author>Harper Lee</author>
+        <year>1960</year>
+        <price>18.00</price>
+    </book>
+    <book>
+        <title>Harry Potter and the Half Blood Prince</title>
+        <author>J.K. Rowling</author>
+        <year>1999</year>
+        <price>12.00</price>
+    </book>
+</books>
+
+
+//script6.js file
+$(document).ready(function(){
+    // Populate select box with book titles
+    $.ajax({
+        url: "get_books.php",
+        type: "GET",
+        dataType: "xml",
+        success: function(response){
+            $(response).find("book").each(function(){
+                var title = $(this).find("title").text();
+                $("#bookSelect").append("<option value='" + title + "'>" + title + "</option>");
+            });
+        },
+        error: function(xhr, status, error){
+            console.error(xhr.responseText);
+        }
+    });
+
+    // Get book details on select change
+    $("#bookSelect").change(function(){
+        var selectedBook = $(this).val();
+        if(selectedBook !== ""){
+            $.ajax({
+                url: "get_book_details.php",
+                type: "POST",
+                data: {selectedBook: selectedBook},
+                success: function(response){
+                    $("#bookDetails").html(response);
+                },
+                error: function(xhr, status, error){
+                    console.error(xhr.responseText);
+                }
+            });
+        } else {
+            $("#bookDetails").html("Please select a book first.");
+        }
+    });
+});

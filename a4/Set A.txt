@@ -1,0 +1,92 @@
+//setA a1.html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contact Viewer</title>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="script.js"></script>
+</head>
+<body>
+<h2>Contact Viewer</h2>
+<button id="printBtn">Print Contacts</button>
+<div id="contactsTable"></div>
+</body>
+</html>
+
+//contact.dat file
+1,John Doe,123456,9876543210,123 Main St
+2,Jane Smith,654321,1234567890,456 Elm St
+3,Alice Johnson,987654,9876543210,789 Oak St    
+
+//script.js file
+$(document).ready(function(){
+    $("#printBtn").click(function(){
+        $.ajax({
+            url: "read_contacts.php",
+            type: "GET",
+            success: function(response){
+                $("#contactsTable").html(response);
+            },
+            error: function(xhr, status, error){
+                console.error(xhr.responseText);
+            }
+        });
+    });
+});
+
+
+//setA a2.html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AJAX Username Checker</title>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="script2.js"></script>
+</head>
+<body>
+<h2>AJAX Username Checker</h2>
+<p>Enter your name:</p>
+<input type="text" id="usernameInput">
+<p id="response"></p>
+</body>
+</html>
+
+//check_username.php file
+<?php
+$username = $_POST['username'];
+
+if(empty($username)){
+    echo "Stranger, please tell me your name!";
+} else if(in_array($username, array("Rohit", "Virat", "Dhoni", "Ashwin", "Harbhajan"))){
+    echo "Hello, master $username!";
+} else {
+    echo "$username, I don't know you!";
+}
+?>
+
+//script2.js file
+$(document).ready(function(){
+    $("#usernameInput").keyup(function(){
+        var username = $(this).val();
+        if(username === ''){
+            $("#response").text("Stranger, please tell me your name!");
+        } else {
+            $.ajax({
+                url: "check_username.php",
+                type: "POST",
+                data: {username: username},
+                success: function(response){
+                    $("#response").text(response);
+                },
+                error: function(xhr, status, error){
+                    console.error(xhr.responseText);
+                }
+            });
+        }
+    });
+});
+
